@@ -1,0 +1,88 @@
+# include<stdlib.h>
+# include<stdio.h>
+# include<iostream>
+
+using namespace std;
+
+// 找出最相近的兩個因數
+void Factor( unsigned long long int num, unsigned long long int & factor1,unsigned long long int & factor2, unsigned long long int & loop ) { 
+  int temp = 2,fac = 2;
+  if ( num % temp == 0 && num != 2 )
+    factor1 = 2, factor2 = num / temp;
+  while ( temp < num / fac ) {
+  	if ( num % temp == 0 ) {
+      fac = temp;
+  	  factor1 = temp;
+	  factor2 = num / temp; 
+	} // if 
+    temp++;
+    loop++;
+  } // while
+} // Factor()
+void Print() {
+  cout << endl;
+  cout << "** Fibonacci Series Generator **" << endl;
+  cout << "* 0. Quit                      *" << endl;
+  cout << "* 1. Iterative generation      *" << endl;
+  cout << "* 2. Recursive generation      *" << endl;
+  cout << "********************************" << endl;
+  cout << "Input a command(0, 1, 2):";
+} // Print
+
+int main() {
+  unsigned long long fab[93];
+  fab[0] = 1;
+  fab[1] = 1;
+  Print();
+  int command, input;
+  cin >> command;
+  while ( command != 0 ) {
+    if ( command == 1 ) {  // 迴圈 
+	  cout << endl << "Input a number:";
+      cin >> input; 
+  	  int i = 2;     // times是第幾次 	  
+	  if( input != 1 ) {
+		for(i = 2; i <= input; i++ )
+		  fab[i] = fab[i-1] + fab[i-2];
+   	  } // if
+	     
+	  i = 1 ;
+	  long long int outerloop = 0;
+      while ( i <= input ) {
+        unsigned long long int loop = 0; // loop是幾個迴圈   
+        unsigned long long int factor1 = 1, factor2 = fab[i];  // 兩個因數  
+        Factor( fab[i], factor1, factor2, loop );
+        cout << "[" << i << "] ";  
+  	    cout << fab[i] << " = " << factor1 << " * " << factor2 << "    ";
+  	    cout << "(Inner loop:  " << loop << "times)" << endl;
+  	    i++;
+  	    outerloop++;
+      } // while
+      
+      cout << "Outer loop:" << outerloop << " times>";
+    } // if
+    else if ( command == 2 ) { // recursive
+      cout << endl << "Input a number:";
+      cin >> input;
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    } // else if 
+    else
+      cout << endl << "Command does not exist!" << endl;
+    
+    
+    Print();
+    cin >> command;
+  } // while
+} // main()
