@@ -1,24 +1,36 @@
+// 10727140黃于軒 10727154 黃于珊 
 # include<stdlib.h>
 # include<stdio.h>
 # include<iostream>
+# include<math.h>
 
 using namespace std;
 
 // 找出最相近的兩個因數
-void Factor( unsigned long long int num, unsigned long long int & factor1,unsigned long long int & factor2, unsigned long long int & loop ) { 
-  int temp = 2,fac = 2;
-  if ( num % temp == 0 && num != 2 )
-    factor1 = 2, factor2 = num / temp;
-  while ( temp < num / fac ) {
-  	if ( num % temp == 0 ) {
-      fac = temp;
-  	  factor1 = temp;
-	  factor2 = num / temp; 
-	} // if 
-    temp++;
-    loop++;
+unsigned long long int Fac( unsigned long long int num, long long int & loop ) {
+  unsigned long long int midnum = sqrt(num);
+  while ( midnum > 1 && num % midnum != 0 ) {
+   midnum--;
+   loop++;
   } // while
-} // Factor()
+  
+  return midnum;
+} // Fac()
+
+bool ReFac( unsigned long long num, unsigned long long int & midnum,unsigned long long int & recursion, int & n ) {
+  if ( midnum > 1 && num % midnum != 0 ) {
+   recursion++;
+   midnum--;
+   if ( recursion > 40000 ) {
+     recursion = 0;
+     n++;
+     return true;
+    } // if
+   return ReFac( num, midnum, recursion, n );
+  } // if
+  return false;
+} // ReFac()
+
 void Print() {
   cout << endl;
   cout << "** Fibonacci Series Generator **" << endl;
@@ -29,6 +41,40 @@ void Print() {
   cout << "Input a command(0, 1, 2):";
 } // Print
 
+void RePrint( int i, int input, long long int & outerRC, unsigned long long fab[93] ) {
+  if ( i <= input ) {
+    unsigned long long int recursion = 0;
+ int n = 0; 
+    unsigned long long int factor1 = 1, factor2 = fab[i], midnum = sqrt(fab[i]);  // 兩個因數, midnum = num開根號;  
+    while ( ReFac( fab[i], midnum, recursion, n ) ) ;
+    factor1 = midnum;
+    factor2 = fab[i] / factor1;
+    recursion = recursion + 40000 * n;
+    cout << "[" << i << "] " << fab[i] << " = " << factor1 << " * " << factor2 << "    ";
+   cout << "(Inner recursion:  " << recursion << "times)" << endl;
+   outerRC++;
+   RePrint( i + 1, input, outerRC, fab );
+  } // if
+} // RePrint()
+
+void DHf( int i, int input, unsigned long long fab[93] ) { 
+  if( input != 1 ) {
+ if ( i <= input ) { 
+   fab[i] = fab[i-1] + fab[i-2];
+      DHf( i+1, input, fab );
+    } // if
+  } // if  
+} // DHf()
+
+void Nnumber( int & input ) {
+  if ( input <= 0 ) {
+ cout << endl << "Input a number:"; 
+    cin >> input ;
+    Nnumber( input );
+  } // if
+} // Number()
+
+
 int main() {
   unsigned long long fab[93];
   fab[0] = 1;
@@ -37,50 +83,86 @@ int main() {
   int command, input;
   cin >> command;
   while ( command != 0 ) {
-    if ( command == 1 ) {  // 迴圈 
-	  cout << endl << "Input a number:";
+   
+    if ( command == 1 ) {  // ------------------------迴圈 ----------------------
+   cout << endl << "Input a number:";
       cin >> input; 
-  	  int i = 2;     // times是第幾次 	  
-	  if( input != 1 ) {
-		for(i = 2; i <= input; i++ )
-		  fab[i] = fab[i-1] + fab[i-2];
-   	  } // if
-	     
-	  i = 1 ;
-	  long long int outerloop = 0;
-      while ( i <= input ) {
-        unsigned long long int loop = 0; // loop是幾個迴圈   
-        unsigned long long int factor1 = 1, factor2 = fab[i];  // 兩個因數  
-        Factor( fab[i], factor1, factor2, loop );
-        cout << "[" << i << "] ";  
-  	    cout << fab[i] << " = " << factor1 << " * " << factor2 << "    ";
-  	    cout << "(Inner loop:  " << loop << "times)" << endl;
-  	    i++;
-  	    outerloop++;
-      } // while
+   
+      while ( input <= 0 ) {
+     cout << endl << "Input a number:";
+  cin >> input ;
+   } // while
+   
+      if( input > 0 && input <= 92 ) { 
+    
+         int i = 2;     // i是第幾次
+       if( input != 1 ) {
+      for(i = 2; i <= input; i++ )
+      fab[i] = fab[i-1] + fab[i-2];
+          } // if
+     
+       i = 1 ;
+       long long int outerloop = 0;
+          while ( i <= input ) {
+            long long loop = 0; // loop是幾個迴圈   
+            unsigned long long int factor1 = 1, factor2 = fab[i];  // 兩個因數  
+            factor1 = Fac( fab[i], loop );
+            factor2 = fab[i] / factor1;
+            cout << "[" << i << "] ";  
+           cout << fab[i] << " = " << factor1 << " * " << factor2 << "    ";
+           cout << "(Inner loop:  " << loop << "times)" << endl;
+           i++;
+           outerloop++;
+          } //  while
       
-      cout << "Outer loop:" << outerloop << " times>";
+          cout << "Outer loop:" << outerloop << " times>";
+        } // if
+        else if (input > 92) {
+          int i = 2;     // i是第幾次 
+      input = 92 ;   
+       if( input != 1 ) {
+      for(i = 2; i <= input; i++ )
+        fab[i] = fab[i-1] + fab[i-2];
+          } // if
+      
+       i = 1 ;
+       long long int outerloop = 0;
+          while ( i <= input ) {
+            long long loop = 0; // loop是幾個迴圈   
+            unsigned long long int factor1 = 1, factor2 = fab[i];  // 兩個因數  
+            factor1 = Fac( fab[i], loop );
+            factor2 = fab[i] / factor1;
+            cout << "[" << i << "] ";  
+           cout << fab[i] << " = " << factor1 << " * " << factor2 << "    ";
+           cout << "(Inner loop:  " << loop << "times)" << endl;
+           i++;
+           outerloop++;
+          } // while
+      
+        cout << "Outer loop:" << outerloop << " times>";
+   }//else if
+   else 
+     break ;
+   
     } // if
-    else if ( command == 2 ) { // recursive
+    else if ( command == 2 ) { // -----------------------recursive遞迴----------------------- 
       cout << endl << "Input a number:";
-      cin >> input;
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+      cin >> input; 
+       
+      if (input <= 0 ) // input 是負數 
+    Nnumber( input );
+      else if ( input > 92 ) // 超出範圍 
+  input = 92 ;
+   
+   int i = 2;     // i是第幾次    
+      DHf( i, input,fab ); // 費氏數列 
+   i = 1 ;
+   long long int outerRC = 0;
+   RePrint( i, input, outerRC, fab );
+      cout << "Outer loop:" << outerRC<< " times>";
     } // else if 
     else
       cout << endl << "Command does not exist!" << endl;
-    
     
     Print();
     cin >> command;
