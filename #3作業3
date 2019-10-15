@@ -1,1 +1,347 @@
+// 10727140 黃于軒 10727154 黃于珊
+# include<string.h>
+# include<iostream>
+# include<stdlib.h>
+# include<stdio.h>
+# include<new>
+# define MAXLEN 255 // string最大長度 
+using namespace std;
 
+struct s_node {
+    int num ;
+    char ch ;
+    s_node *next;	// 鏈結指標
+};
+
+s_node *list, *head;
+s_node *postfix, *p_head;
+
+class C_stack {
+	struct s_stack {
+	    char data;
+	    s_stack *next;
+    };
+    s_stack *top;
+
+public:
+	C_stack() {
+	    top = NULL; 
+	} // C_stack()
+	bool isEmpty() {
+		if ( top == NULL )
+		    return true;
+		return false;
+	} // isEmpty()
+	
+	void Push( char ch ) {  // 加到stack 
+	    s_stack *temp = new s_stack();
+	    temp->data = ch;
+	    temp->next = top;
+	    top = temp;
+	} // Push()
+	
+	char GetTop() { // 看top
+	    return top->data;
+	} // GetTop()
+	
+	void Pop() { // 移除top
+	    s_stack *temp = top;
+	    top = top->next;
+		temp->next = NULL;
+		delete temp; 
+	} // Pop()
+	
+	void ClearUp() {
+		while ( top != NULL ) {
+			s_stack *temp = top;
+			top = top->next;
+			temp->next = NULL;
+			delete temp;
+		} // while
+	} // ClearUp()
+};
+
+class Cal_stack {
+	struct s_stack {
+	    int data;
+	    s_stack *next;
+    };
+    s_stack *top;
+
+public:
+	Cal_stack() {
+	    top = NULL; 
+	} // C_stack()
+	bool isEmpty() {
+		if ( top == NULL )
+		    return true;
+		return false;
+	} // isEmpty()
+	
+	void Push( int num ) {  // 加到stack 
+	    s_stack *temp = new s_stack();
+	    temp->data = num;
+	    temp->next = top;
+	    top = temp;
+	} // Push()
+	
+	int GetTop() { // 看top
+	    return top->data;
+	} // GetTop()
+	
+	void Pop() { // 移除top
+	    s_stack *temp = top;
+	    top = top->next;
+		temp->next = NULL;
+		delete temp; 
+	} // Pop()
+	
+	void ClearUp() {
+		while ( top != NULL ) {
+			s_stack *temp = top;
+			top = top->next;
+			temp->next = NULL;
+			delete temp;
+		} // while
+	} // ClearUp()
+};
+
+void Print() {
+	postfix = p_head;
+	while ( postfix != NULL ) {
+		if ( postfix->ch == '\0' )
+		     cout << postfix->num;
+	    else
+	         cout << postfix->ch;
+	         
+        postfix = postfix->next;
+		if ( postfix != NULL )
+		    cout << ",";	
+	} // while
+	cout << endl;
+} // Print()
+
+void Append( s_node* & postfix, s_node* & p_head ) {
+	if ( p_head != NULL) {
+    	postfix->next = new s_node();
+	    postfix = postfix->next;
+	    postfix->next = NULL;
+	} // if
+	else {
+	   postfix = new s_node();
+	   p_head = postfix;
+	   postfix->next = NULL;
+    } // else
+} // Append()
+
+bool IsPair() {
+	int left = 0;
+	list = head;
+	while ( list != NULL ) {
+	    if ( list->ch == '(' )
+	        left++;
+	    else if ( list->ch == ')' )
+	        left--;
+	        
+	    if ( left < 0 ) {
+    	    cout << "Error 2: there is one extra close parenthesis." << endl;
+	        return false;
+    	} // if
+    	
+    	list = list->next;
+	} // while
+	if ( left == 0 ) 
+	    return true;
+	else
+	    cout << "Error 2: there is one extra open parenthesis." << endl;
+	return false;
+} // isPair()
+
+bool RightLocation() {
+	list = head;
+	s_node *before = NULL;
+	while ( list != NULL ) {
+		if ( list->ch == '+' || list->ch == '-' || list->ch == '*' || list->ch == '/' ) {
+			if ( before == NULL || list->next == NULL || before->ch == '(' || list->next->ch == ')' ) {
+				cout << "Error 3: there is one extra operator." << endl;
+			    return false;
+			} // if
+		} // if
+		else if ( list->ch == '\0' ) {
+			if ( ( before != NULL && before->ch == ')' ) ||  ( list->next != NULL && list->next->ch == '(' ) ) {
+				cout << "Error 3: there is one extra operand." << endl;
+				return false;
+			} // if
+		} // else if
+		else if (  list->ch == '(' && list->next->ch == ')') {
+		    cout << "Error 3: it is not infix in the parentheses." << endl;
+		    return false;
+		} // else if
+		
+		before = list;
+		list = list->next;  
+	} //while
+	
+	return true;
+} // RightLocation()
+
+bool IsList( string input ) {
+	for( int i = 0; input[i] != '\0'; i++ ) {
+		if ( input[i] != ' ' )
+    		Append( list, head );
+		if ( input[i] == '+' || input[i] == '-' || input[i] == '*' 
+			|| input[i] == '/' || input[i] == '(' || input[i]== ')' )
+		    list->ch = input[i];
+		else if ( input[i] >= '0' && input[i] <= '9' ) {
+		    int num = 0;
+		    list->ch = '\0';
+		    while ( input[i] >= '0' && input[i] <= '9' ) {
+		    	num = num * 10 + ( input[i] - '0' );
+		    	i ++ ;
+		    } // while
+		    
+		    i--;
+		    list->num = num;
+		} // else if
+		else if ( input[i] != ' ' ) {
+			cout << "Error 1: " << input[i] << " is not a legitimate character." << endl;
+			return false;
+		} // else if
+	} // for
+	cout << endl;
+	
+	return true;
+} // 
+
+int priority(char op) { // 優先權 
+    switch(op) { 
+        case '+': case '-': return 1;
+        case '*': case '/': return 2;
+        default:            return 0;
+    } // switch()
+}  // priority()
+
+void ToPostfix ( C_stack & stack ) {
+	while ( list != NULL ) {
+		if ( list->ch == '\0' ) {
+		    Append( postfix, p_head );
+		    postfix->num = list->num;
+		} // if
+		else if ( list->ch == '+' || list->ch == '-' || list->ch == '*' || list->ch == '/' ) {
+			while ( ! stack.isEmpty() && priority( stack.GetTop() ) >= priority( list->ch ) ) {
+				Append (postfix, p_head);
+	    		postfix->ch = stack.GetTop();
+		     	stack.Pop();
+			} // while
+			
+		   	stack.Push( list->ch );
+		} // else if
+		else if ( list->ch == ')' ) {
+			while ( stack.GetTop() != '(' ) {
+				Append( postfix, p_head );
+				postfix->ch = stack.GetTop();
+				stack.Pop();
+			} // while
+			
+			stack.Pop();
+		} // else if
+		else
+		    stack.Push( list->ch );
+		
+		list = list->next;
+	} // while
+	
+	while ( ! stack.isEmpty() ) {
+		Append( postfix, p_head);
+		postfix->ch = stack.GetTop();
+		stack.Pop();
+	} // while
+} // ToPostfix()
+
+bool Calculate( Cal_stack cal, int & num ) {
+	postfix = p_head;
+	while ( postfix != NULL ) {
+		if ( postfix->ch == '\0' ) {
+			cal.Push( postfix->num );
+			num = postfix->num;
+		} // if
+		
+		else {
+            num = cal.GetTop();
+            cal.Pop();
+	    	if ( postfix->ch == '+' ) {
+                num = num + cal.GetTop();
+	    	} // if
+	    	else if ( postfix->ch == '-' ) {
+                num = cal.GetTop() - num;
+    		} // else if
+    		else if ( postfix->ch == '*' ) {
+                num = num * cal.GetTop();
+    		} // else if
+    		else if ( postfix->ch == '/' ) {
+    			if ( num == 0 ) {
+    				cout << "### Error: Divided by ZERO! ###" << endl;
+    			    cout << "### It cannot be successfully evaluated! ###" << endl;
+    				return false;
+				} // if
+				else
+				    num = cal.GetTop() / num;
+    		} // else if
+		    cal.Pop();    
+
+            cal.Push( num );
+	     } // else
+		
+	    postfix = postfix->next;
+	} // while
+	
+	return true;
+} // Caculate()
+
+void ClearList( s_node* & list ) {
+	while ( list != NULL ) {
+		s_node *temp = list;
+		list = list->next;
+		temp = NULL;
+		delete temp;
+	} // while
+} // ClearList()
+
+int main() {
+	char command = '\0';
+	string input = "";
+	do {
+	    cout << endl << "* Arithmetic Expression Evaluator *";
+	    cout << endl << "* 0. QUIT                         *";
+	    cout << endl << "* 1. Infix2postfix Transformation *";
+	    cout << endl << "***********************************";
+	    cout << endl << "Input a choice(0, 1): "; 
+	    cin >> command;
+	    cin.ignore( MAXLEN, '\n' ); // 讀掉指令後面不必要的東西 
+	    if ( command == '0' )
+			break;
+		else if ( command == '1' ) {
+		    cout << endl << "Input an infix expression:";
+		    getline( cin, input );
+		    list = NULL;
+			if ( IsList( input ) && IsPair() && RightLocation() ) {
+		        cout << "It is a legitimate infix expression." << endl;
+		        list = head;
+		        C_stack stack = C_stack();
+		        ToPostfix( stack );
+		        Print();
+		        stack.ClearUp();
+		    	int total = 0;
+	            Cal_stack cal = Cal_stack();
+			    if ( Calculate( cal, total ) )
+			        cout << "Answer: " << total << endl;
+			    cal.ClearUp();
+			    ClearList( p_head );
+			} // if
+
+		    ClearList( head );
+		} // else if
+		else
+			cout << endl << "Command does not exist!" << endl;
+    } while ( command != 0 ); 
+} // main()
