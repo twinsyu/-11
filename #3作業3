@@ -162,13 +162,14 @@ bool RightLocation() {
 	s_node *before = NULL;
 	while ( list != NULL ) {
 		if ( list->ch == '+' || list->ch == '-' || list->ch == '*' || list->ch == '/' ) {
-			if ( before == NULL || list->next == NULL || before->ch == '(' || list->next->ch == ')' ) {
+			if ( before == NULL || list->next == NULL || before->ch == '(' || list->next->ch == ')'
+			 || list->next->ch == '+' || list->next->ch == '-' || list->next->ch == '*' || list->next->ch == '/' ) {
 				cout << "Error 3: there is one extra operator." << endl;
 			    return false;
 			} // if
 		} // if
 		else if ( list->ch == '\0' ) {
-			if ( ( before != NULL && before->ch == ')' ) ||  ( list->next != NULL && list->next->ch == '(' ) ) {
+			if ( ( before != NULL && before->ch == ')' ) || ( list->next != NULL && list->next->ch == '(' ) ) {
 				cout << "Error 3: there is one extra operand." << endl;
 				return false;
 			} // if
@@ -208,7 +209,6 @@ bool IsList( string input ) {
 			return false;
 		} // else if
 	} // for
-	cout << endl;
 	
 	return true;
 } // 
@@ -343,5 +343,6 @@ int main() {
 		} // else if
 		else
 			cout << endl << "Command does not exist!" << endl;
+			
     } while ( command != 0 ); 
 } // main()
