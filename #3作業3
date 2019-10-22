@@ -121,7 +121,7 @@ void Print() {
 	cout << endl;
 } // Print()
 
-void Append( s_node* & postfix, s_node* & p_head ) {
+void Append( s_node* & postfix, s_node* & p_head ) { // 配置記憶體空間
 	if ( p_head != NULL) {
     	postfix->next = new s_node();
 	    postfix = postfix->next;
@@ -134,7 +134,7 @@ void Append( s_node* & postfix, s_node* & p_head ) {
     } // else
 } // Append()
 
-bool IsPair() {
+bool IsPair() { // 判斷括號是否成對
 	int left = 0;
 	list = head;
 	while ( list != NULL ) {
@@ -157,7 +157,7 @@ bool IsPair() {
 	return false;
 } // isPair()
 
-bool RightLocation() {
+bool RightLocation() { // 判斷是否在正確位置上
 	list = head;
 	s_node *before = NULL;
 	while ( list != NULL ) {
