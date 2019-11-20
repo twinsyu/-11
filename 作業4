@@ -1,4 +1,3 @@
-# DS
 //10727140 黃于軒 10727154 黃于珊
 # include<iostream> 
 # include<cstdio>
@@ -111,7 +110,7 @@ public:
 	void ShellSort () {
 		for ( int h = total / 2; h > 0 ; h = h / 2 ) {
 
-			cout << endl << endl << " h = " << h << endl;
+			//cout << endl << endl << " h = " << h << endl;
 
 			for ( int unsorted = h; unsorted < total; ++unsorted ) {
 				int loc = unsorted;
@@ -127,7 +126,8 @@ public:
 				} // while
 			} // for
             Check();
-			Print();
+            Check();
+            //Check();
 		} // for
 	} // ShellSort()
 
@@ -149,6 +149,7 @@ public:
 	} // Check()
 	
 	void Print() {
+		cout << endl ;
 		cout << endl << "OID" << setw(10) << "Arrival"  << setw(10) << "Duration" << setw(10) << "TimeOut";
 		QueueNode *temp = backPtr->next;
 		do {
@@ -208,7 +209,10 @@ int main() {
 			//	START = clock();
 			//	cout << "c" << START;
 				queue.ShellSort();
-				//queue.Check();
+				queue.ShellSort();
+				queue.ShellSort();
+				queue.ShellSort();
+				queue.Print();
 			//	END = clock();
 				cout << endl << "Reading data: " << readT << " s).";
 				queue.Write( filenumber );
