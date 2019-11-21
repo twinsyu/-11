@@ -196,26 +196,38 @@ int main() {
 			break;
 		else if ( command == 1 ) {
 			double readT, sortT, writeT;
-			double START,END;
+			double START,END,temp;
+			double temp2,test;
 			Queue queue; 
 			START = clock();
 			haveFile = queue.Load( filenumber );
+
 			END = clock();
 			if ( haveFile ) {
 				queue.Print();
 
-				readT = (double)clock()/CLOCKS_PER_SEC;
+				readT = END - START ; // (double)clock()/CLOCKS_PER_SEC;
 			//	START = 0.00;
-			//	START = clock();
+				START = clock();
 			//	cout << "c" << START;
 				queue.ShellSort();
 				queue.ShellSort();
 				queue.ShellSort();
 				queue.ShellSort();
 				queue.Print();
-			//	END = clock();
-				cout << endl << "Reading data: " << readT << " s).";
+				END = clock();
+				
+				// temp = (double)clock()/CLOCKS_PER_SEC;
+				sortT = END - START ;// temp - readT ;
+				START = clock();
 				queue.Write( filenumber );
+				END = clock();
+				// temp2 = (double)clock()/CLOCKS_PER_SEC;
+				writeT = END - START ;// temp2 - sortT ;
+				cout << endl << "Reading data: " << readT << " ms).";
+				cout << endl << "Sorting data: " << sortT << " ms).";
+				cout << endl << "Writing data: " << writeT << " ms)." ;
+
 			} // if
 		} // else if ( command == 1 )
 		else if ( command == 2 ) {
@@ -224,4 +236,3 @@ int main() {
 
 	} while ( command != 0 );
 } // main()
-	
