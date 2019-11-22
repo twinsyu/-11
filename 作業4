@@ -23,6 +23,7 @@ typedef QueueNode *QueuePtr ;
 QueueNode *backPtr;
 int total; // 總數 
 public:
+
 	Queue() {
 		backPtr = NULL;
 		total = 0;
@@ -110,8 +111,6 @@ public:
 	void ShellSort () {
 		for ( int h = total / 2; h > 0 ; h = h / 2 ) {
 
-			//cout << endl << endl << " h = " << h << endl;
-
 			for ( int unsorted = h; unsorted < total; ++unsorted ) {
 				int loc = unsorted;
 				QueueNode *nextData = Move( unsorted );
@@ -176,7 +175,7 @@ public:
 			temp = temp->next;
 		} while ( temp != backPtr->next ); 
 	} // Write()
-
+ 
 };
 
 
@@ -197,42 +196,41 @@ int main() {
 		else if ( command == 1 ) {
 			double readT, sortT, writeT;
 			double START,END,temp;
-			double temp2,test;
 			Queue queue; 
 			START = clock();
 			haveFile = queue.Load( filenumber );
-
 			END = clock();
 			if ( haveFile ) {
 				queue.Print();
 
-				readT = END - START ; // (double)clock()/CLOCKS_PER_SEC;
-			//	START = 0.00;
+				readT = END - START ; 
+
 				START = clock();
-			//	cout << "c" << START;
+				
 				queue.ShellSort();
 				queue.ShellSort();
 				queue.ShellSort();
-				queue.ShellSort();
+	        	queue.ShellSort();
 				queue.Print();
 				END = clock();
 				
-				// temp = (double)clock()/CLOCKS_PER_SEC;
-				sortT = END - START ;// temp - readT ;
+				
+				sortT = END - START ;
 				START = clock();
 				queue.Write( filenumber );
 				END = clock();
-				// temp2 = (double)clock()/CLOCKS_PER_SEC;
-				writeT = END - START ;// temp2 - sortT ;
+				
+				writeT = END - START ;
 				cout << endl << "Reading data: " << readT << " ms).";
 				cout << endl << "Sorting data: " << sortT << " ms).";
 				cout << endl << "Writing data: " << writeT << " ms)." ;
 
 			} // if
+			
 		} // else if ( command == 1 )
 		else if ( command == 2 ) {
 
 		} // else if ( command == 2 )
-
+        
 	} while ( command != 0 );
 } // main()
