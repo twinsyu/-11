@@ -1,0 +1,102 @@
+// 10727140 黃于軒 10727154 黃于珊
+# include<iostream>
+# include<cstdio>
+# include<cstring>
+# include<stdlib.h>
+# include<new>
+# include<iomanip>
+# include<time.h>
+# include<fstream>
+using namespace std;
+
+class List {
+	struct Data {
+		int schoolID;      // 學校代碼 
+		string schoolName; // 學校名稱 
+		int depID;         // 科系代碼 
+		string depName;    // 科系名稱
+		string dn;         // 日間/進修別 
+		string level;      // 等級別 
+		int studentNum ;   // 學生數 
+		int teacherNum;    // 教師數 
+		int gNum;          // 上學年度畢業生數 
+		string city;       // 縣市名稱 
+		string www ;       //體系別 
+	};
+	
+public:
+	
+	bool Load( string fileNum ) {
+		cout << endl << "Input a file number: ";
+		cin >> fileNum;
+		
+		FILE *infile = NULL;
+		
+		string filename = "input" + fileNum + ".txt";
+		infile = fopen( filename.c_str(). "r" );
+		
+		if ( infile == NULL )  // 無檔案 
+			cout << endl << filename << "does not exist!" << endl;
+		else {
+			
+			
+			return true;
+		} // else
+		
+		return false;
+	
+	} // Load()
+	
+	void Write( string fileNum ) {
+		string newFile = "sorted" + fileNum + ".txt";
+		ofstream outfile( newFile.c_str() );
+		
+		
+		
+	} // Write()
+	
+	void Ssort() { //選擇排序 
+		
+	} // Ssort()
+	void Bsort () { //氣泡排序 
+		
+	} // Bsort()
+	void Msort () { //合併排序 
+		
+	} // Msort()
+	void Qsort () { //快速排序 
+		
+	} // Qsort()
+	
+	
+};
+
+
+int main() {
+	int command;
+	List list;
+	bool haveFile;
+	double START, END; 
+	do {
+		cout << endl << "******** Sorting Algorithms *********" ;
+		cout << endl << "* 0. QUIT                           *" ;
+		cout << endl << "* 1. Selection sort vs. Bubble sort *" ;
+		cout << endl << "* 2. Merge sort vs. Quick sort      *" ;
+		cout << endl << "*************************************" ;
+		cout << endl << "Input a command(0, 1, 2): ";
+		cin >> command;
+		if ( command == 0 )
+			break;
+		else if ( command == 1 ) {
+			list.Ssort();
+			list.Bsort();
+			
+			
+			
+		} // else if 
+		else if ( command == 2 ) {
+			
+		} // else if 
+		
+	} // while( command != 0 );
+}  // main()
