@@ -21,9 +21,6 @@ class List {
 public:
 	
 	bool Load( string fileNum ) { // 讀檔 
-		cout << endl << "Input a file number: ";
-		cin >> fileNum; // 檔案編號 
-		
 		FILE *infile = NULL;
 		
 		string filename = "input" + fileNum + ".txt";
@@ -38,6 +35,7 @@ public:
 			for ( char ch = '\0'; ch != '\n' ; ch = getc(infile) );
 			for ( char ch = '\0'; ch != '\n' ; ch = getc(infile) );
 			for ( char ch = '\0'; ch != '\n' ; ch = getc(infile) );
+			
 			while ( ! feof( infile ) ) {
 				Data tempD;
 				tempD.totalData = "";
@@ -48,7 +46,7 @@ public:
 					
 					if ( i == 4 || i == 6 || i == 11 ) // 日間 /進修別, 等級別, 縣市名稱
 						tempD.totalData = tempD.totalData + ' ' ;
-					else if ( i != 14 ) // 一行中最後一項數據 
+					else if ( i != 14 ) // 除了一行中最後一項數據
 						tempD.totalData = tempD.totalData + '\t';
 					
 					if ( i == 10 ) { // 上學年度畢業生數 
@@ -56,13 +54,10 @@ public:
 					} // if 
 				} // for
 				
-				
 				collegeSet.push_back( tempD );
 			} // while
 			
-			
 			fclose( infile );
-			
 			return true;
 		} // else 有檔案 
 		
@@ -73,28 +68,88 @@ public:
 		string newFile = sortType + "_sort" + fileNum + ".txt";
 		ofstream outfile( newFile.c_str() );
 		
-	} // Write()
-	
-	void Print() {
 		int size = collegeSet.size();
-		cout << size;
-		for ( int i = 0; i < size ; i++ ) {
-			cout << endl << collegeSet[i].totalData;
+		for ( int i = 0; i < size; i++ ) {
+			outfile << collegeSet[i].totalData << endl;
 		} // for
 		
-	} // 
+		
+	} // Write()
 	
-	void Ssort() { //選擇排序 
+	void Clear() {
+		collegeSet.clear();
+	} // Clear()
+	 
+	void Swap( int a, int b) { // 交換
+		string tempS = "";
+		int tempN;
 		
+		tempS = collegeSet[a].totalData;
+		tempN = collegeSet[a].gNum;
+		
+		collegeSet[a].totalData = collegeSet[b].totalData;
+		collegeSet[a].gNum = collegeSet[b].gNum;
+		
+		collegeSet[b].totalData = tempS;
+		collegeSet[b].gNum = tempN;
+	} // Swap
+	 
+///*
+	void Print() {
+		int size = collegeSet.size();
+		for ( int i = 0; i < size; i++ ) {
+			cout << endl << collegeSet[i].totalData;
+		} // for
+	} // Print() 
+//*/	
+
+	double Ssort() { //選擇排序 
+		double START, END;
+		START = clock();
+		int size = collegeSet.size();
+		int max = -1; // 最大數的 
+		int indexOfMax;
+		
+		for ( int i = 0; i < size - 1; i++ ) {
+			int max = -1; // 最大數
+			for ( int j = i; j < size; j++ ) {
+				if ( collegeSet[j].gNum > max ) {
+					max = collegeSet[j].gNum;
+					indexOfMax = j;
+				} // if	
+			} // for
+			
+			if ( indexOfMax != i )
+				Swap( i, indexOfMax );
+		} // for
+		END = clock();
+		return END - START;
 	} // Ssort()
-	void Bsort () { //氣泡排序 
+	
+	double Bsort () { //氣泡排序 
+		double START, END;
+		START = clock();
 		
+		
+		
+		
+		END = clock();
+		return END - START;
 	} // Bsort()
-	void Msort () { //合併排序 
+	double Msort () { //合併排序 
+		double START, END;
+		START = clock();
 		
+		
+		END = clock();
+		return END - START;
 	} // Msort()
-	void Qsort () { //快速排序 
+	double Qsort () { //快速排序 
+		double START, END;
+		START = clock();
 		
+		END = clock();
+		return END - START;
 	} // Qsort()
 };
 
@@ -104,7 +159,6 @@ int main() {
 	List list;
 	string fileNum;
 	bool haveFile;
-	double START, END; 
 	do {
 		cout << endl << "******** Sorting Algorithms *********" ;
 		cout << endl << "* 0. QUIT                           *" ;
@@ -116,12 +170,29 @@ int main() {
 		if ( command == 0 )
 			break;
 		else if ( command == 1 ) {
+			cout << endl << "Input a file number: ";
+			cin >> fileNum; // 檔案編號 
+		
+			double selectT, bubbleT;
 			list.Load( fileNum );
-			list.Print();
-//			list.Ssort(); // 選擇排序 
-//			list.Bsort(); // 氣泡排序 
+			selectT = list.Ssort(); // 選擇排序 
+			list.Write( fileNum, "MY_select" );
+			list.Clear();
+			
+//			list.Load( fileNum );
+//			cout << endl << "again";
+//			list.Print();
+//			list.Clear();
+//			bubbleT = list.Bsort(); // 氣泡排序 
+			cout << endl << "Select sort time : " << selectT << " ms." ;
+//			cout << endl << "Bubble sort time : " << bubbleT << " ms." ;
 		} // else if 
 		else if ( command == 2 ) {
+			double mergeT, quickT;
+			list.Load( fileNum );
+			
+//			cout << endl << "Merge sort time : " << mergeT << " ms." ;
+//			cout << endl << "QUick sort time : " << quickT << " ms." ;
 			
 		} // else if 
 		
