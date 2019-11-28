@@ -129,9 +129,17 @@ public:
 	double Bsort () { //氣泡排序 
 		double START, END;
 		START = clock();
-		
-		
-		
+		bool sorted = false;
+		int size = collegeSet.size();
+		for ( int i=0; i<size && !sorted ; i++ ){
+			sorted = true;
+			for(int j=1;j<size-i;j++){
+				if( collegeSet[j].gNum > collegeSet[j-1].gNum ){
+					Swap(j,j-1);
+					sorted = false;
+				}//if
+			}//for
+		}//for
 		
 		END = clock();
 		return END - START;
@@ -144,10 +152,33 @@ public:
 		END = clock();
 		return END - START;
 	} // Msort()
+	
 	double Qsort () { //快速排序 
 		double START, END;
 		START = clock();
 		
+		int first = 0;
+		int last = collegeSet.size();
+		int p = 0;
+		
+		int lastS1 = first ;
+		int firstUn = first + 1 ;
+		while( firstUn <= last ){
+			if( collegeSet[firstUn].gNum > collegeSet[p].gNum ) {
+				//lastS1++;
+				Swap( lastS1,firstUn );
+				lastS1++;
+			}// if
+			else {
+				firstUn++;
+				//Swap( first ,lastS1 );
+				//p = lastS1 ;	
+			} // else
+			firstUn++;	
+		} // while
+
+
+
 		END = clock();
 		return END - START;
 	} // Qsort()
@@ -179,6 +210,11 @@ int main() {
 			list.Write( fileNum, "MY_select" );
 			list.Clear();
 			
+			list.Load( fileNum );
+			bubbleT = list.Bsort(); // 氣泡排序 
+			list.Write( fileNum, "MY_select Bubble" );
+			list.Clear();
+			
 //			list.Load( fileNum );
 //			cout << endl << "again";
 //			list.Print();
@@ -188,12 +224,20 @@ int main() {
 //			cout << endl << "Bubble sort time : " << bubbleT << " ms." ;
 		} // else if 
 		else if ( command == 2 ) {
+			cout << endl << "Input a file number: ";
+			cin >> fileNum; // 檔案編號 
+			
+			
 			double mergeT, quickT;
+			
 			list.Load( fileNum );
+			quickT = list.Qsort();
+			list.Write( fileNum, "MY_select Quick" );
+			list.Print();
+			list.Clear();
 			
-//			cout << endl << "Merge sort time : " << mergeT << " ms." ;
-//			cout << endl << "QUick sort time : " << quickT << " ms." ;
-			
+			cout << endl << "QUick sort time : " << quickT << " ms." ;
+//			cout << endl << "Merge sort time : " << mergeT << " ms." ;			
 		} // else if 
 		
 	} while( command != 0 );
