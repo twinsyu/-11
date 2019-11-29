@@ -14,7 +14,7 @@ using namespace std;
 class List {
 	struct Data {
 		string totalData; // 一行內的所有資訊
-		int gNum; // 上學年度畢業學生數  
+		int gNum; // 上學年度畢業學生數
 	};
 	vector<Data> collegeSet;
 	
@@ -27,36 +27,37 @@ public:
 		infile = fopen( filename.c_str(), "r" );
 		
 		if ( infile == NULL )  // 無檔案 
-			cout << endl << filename << "does not exist!" << endl;
+			cout << endl << filename << " does not exist!" << endl;
 		else { // 有檔案
-			char temp[] = "temp";
+//			collegeSet.clear(); // 清空vector 
+			char temp[40];
 			
 			//讀掉前三行 
 			for ( char ch = '\0'; ch != '\n' ; ch = getc(infile) );
 			for ( char ch = '\0'; ch != '\n' ; ch = getc(infile) );
 			for ( char ch = '\0'; ch != '\n' ; ch = getc(infile) );
 			
-			while ( ! feof( infile ) ) {
+			while ( fscanf( infile, "%s", temp ) != EOF ) {
 				Data tempD;
 				tempD.totalData = "";
-				int tempGNum;
-				for ( int i = 0; i < 15; i++ ) {
+				tempD.totalData = tempD.totalData+ temp + '\t';
+				for ( int i = 1; i < 15; i++ ) {
 					fscanf( infile, "%s", temp );
 					tempD.totalData = tempD.totalData + temp;
 					
-					if ( i == 4 || i == 6 || i == 11 ) // 日間 /進修別, 等級別, 縣市名稱
+					if ( i == 4 || i == 6 || i == 11 || i == 13 ) // 日間 /進修別, 等級別, 縣市名稱
 						tempD.totalData = tempD.totalData + ' ' ;
 					else if ( i != 14 ) // 除了一行中最後一項數據
 						tempD.totalData = tempD.totalData + '\t';
 					
 					if ( i == 10 ) { // 上學年度畢業生數 
 						tempD.gNum = atoi( temp );
-					} // if 
+					} // if
 				} // for
 				
-				collegeSet.push_back( tempD );
+					collegeSet.push_back( tempD );
 			} // while
-			
+		
 			fclose( infile );
 			return true;
 		} // else 有檔案 
@@ -149,36 +150,18 @@ public:
 		START = clock();
 		
 		
+		
+		
+		
+		
+		
 		END = clock();
 		return END - START;
 	} // Msort()
-	
 	double Qsort () { //快速排序 
 		double START, END;
 		START = clock();
 		
-		int first = 0;
-		int last = collegeSet.size();
-		int p = 0;
-		
-		int lastS1 = first ;
-		int firstUn = first + 1 ;
-		while( firstUn <= last ){
-			if( collegeSet[firstUn].gNum > collegeSet[p].gNum ) {
-				//lastS1++;
-				Swap( lastS1,firstUn );
-				lastS1++;
-			}// if
-			else {
-				firstUn++;
-				//Swap( first ,lastS1 );
-				//p = lastS1 ;	
-			} // else
-			firstUn++;	
-		} // while
-
-
-
 		END = clock();
 		return END - START;
 	} // Qsort()
@@ -207,37 +190,26 @@ int main() {
 			double selectT, bubbleT;
 			list.Load( fileNum );
 			selectT = list.Ssort(); // 選擇排序 
-			list.Write( fileNum, "MY_select" );
+			list.Write( fileNum, "select" );
 			list.Clear();
 			
 			list.Load( fileNum );
-			bubbleT = list.Bsort(); // 氣泡排序 
-			list.Write( fileNum, "MY_select Bubble" );
-			list.Clear();
-			
-//			list.Load( fileNum );
-//			cout << endl << "again";
-//			list.Print();
-//			list.Clear();
-//			bubbleT = list.Bsort(); // 氣泡排序 
+			bubbleT = list.Bsort(); // 氣泡排序
+			list.Write( fileNum, "bubble" );
+			list.Clear(); 
 			cout << endl << "Select sort time : " << selectT << " ms." ;
-//			cout << endl << "Bubble sort time : " << bubbleT << " ms." ;
+			cout << endl << "Bubble sort time : " << bubbleT << " ms." ;
 		} // else if 
 		else if ( command == 2 ) {
-			cout << endl << "Input a file number: ";
-			cin >> fileNum; // 檔案編號 
-			
-			
 			double mergeT, quickT;
-			
 			list.Load( fileNum );
 			quickT = list.Qsort();
 			list.Write( fileNum, "MY_select Quick" );
 			list.Print();
 			list.Clear();
+//			cout << endl << "Merge sort time : " << mergeT << " ms." ;
+//			cout << endl << "QUick sort time : " << quickT << " ms." ;
 			
-			cout << endl << "QUick sort time : " << quickT << " ms." ;
-//			cout << endl << "Merge sort time : " << mergeT << " ms." ;			
 		} // else if 
 		
 	} while( command != 0 );
