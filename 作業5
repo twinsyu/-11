@@ -1,216 +1,28 @@
-// 10727140 黃于軒 10727154 黃于珊
-# include<iostream>
-# include<cstdio>
-# include<cstring>
-# include<stdlib.h>
-# include<new>
-# include<iomanip>
-# include<time.h>
-# include<fstream>
-# include<vector> 
-
-using namespace std;
-
-class List {
-	struct Data {
-		string totalData; // 一行內的所有資訊
-		int gNum; // 上學年度畢業學生數
-	};
-	vector<Data> collegeSet;
-	
-public:
-	
-	bool Load( string fileNum ) { // 讀檔 
-		FILE *infile = NULL;
-		
-		string filename = "input" + fileNum + ".txt";
-		infile = fopen( filename.c_str(), "r" );
-		
-		if ( infile == NULL )  // 無檔案 
-			cout << endl << filename << " does not exist!" << endl;
-		else { // 有檔案
-//			collegeSet.clear(); // 清空vector 
-			char temp[40];
-			
-			//讀掉前三行 
-			for ( char ch = '\0'; ch != '\n' ; ch = getc(infile) );
-			for ( char ch = '\0'; ch != '\n' ; ch = getc(infile) );
-			for ( char ch = '\0'; ch != '\n' ; ch = getc(infile) );
-			
-			while ( fscanf( infile, "%s", temp ) != EOF ) {
-				Data tempD;
-				tempD.totalData = "";
-				tempD.totalData = tempD.totalData+ temp + '\t';
-				for ( int i = 1; i < 15; i++ ) {
-					fscanf( infile, "%s", temp );
-					tempD.totalData = tempD.totalData + temp;
-					
-					if ( i == 4 || i == 6 || i == 11 || i == 13 ) // 日間 /進修別, 等級別, 縣市名稱
-						tempD.totalData = tempD.totalData + ' ' ;
-					else if ( i != 14 ) // 除了一行中最後一項數據
-						tempD.totalData = tempD.totalData + '\t';
-					
-					if ( i == 10 ) { // 上學年度畢業生數 
-						tempD.gNum = atoi( temp );
-					} // if
-				} // for
-				
-					collegeSet.push_back( tempD );
-			} // while
-		
-			fclose( infile );
-			return true;
-		} // else 有檔案 
-		
-		return false;
-	} // Load()
-	
-	void Write( string fileNum, string sortType ) {
-		string newFile = sortType + "_sort" + fileNum + ".txt";
-		ofstream outfile( newFile.c_str() );
-		
-		int size = collegeSet.size();
-		for ( int i = 0; i < size; i++ ) {
-			outfile << collegeSet[i].totalData << endl;
+	void merge( int first, int mid, int last ){
+		vector<Data> temp;
+		int t = collegeSet.size();
+		for(int o=0;o<t;o++)
+			temp[o] = collegeSet[o];
+		//cout << "11111";
+		int first1 = first,first2 = mid+1 ;
+		int last1 = mid,last2 = last ;
+		int i = first;
+		for(;(first1 <= last1)&&(first2 <= last2); ++i) {
+			if( collegeSet[first1].gNum < collegeSet[first2].gNum ){
+				temp[i] = collegeSet[first2];
+				++first2;
+			}// if
+			else {
+				temp[i] = collegeSet[first1];
+				++first1;
+			}//else
 		} // for
-		
-		
-	} // Write()
-	
-	void Clear() {
-		collegeSet.clear();
-	} // Clear()
-	 
-	void Swap( int a, int b) { // 交換
-		string tempS = "";
-		int tempN;
-		
-		tempS = collegeSet[a].totalData;
-		tempN = collegeSet[a].gNum;
-		
-		collegeSet[a].totalData = collegeSet[b].totalData;
-		collegeSet[a].gNum = collegeSet[b].gNum;
-		
-		collegeSet[b].totalData = tempS;
-		collegeSet[b].gNum = tempN;
-	} // Swap
-	 
-///*
-	void Print() {
-		int size = collegeSet.size();
-		for ( int i = 0; i < size; i++ ) {
-			cout << endl << collegeSet[i].totalData;
-		} // for
-	} // Print() 
-//*/	
+        for(;first1<=last1;++first1,++i)
+        	temp[i] = collegeSet[first1];
 
-	double Ssort() { //選擇排序 
-		double START, END;
-		START = clock();
-		int size = collegeSet.size();
-		int max = -1; // 最大數的 
-		int indexOfMax;
-		
-		for ( int i = 0; i < size - 1; i++ ) {
-			int max = -1; // 最大數
-			for ( int j = i; j < size; j++ ) {
-				if ( collegeSet[j].gNum > max ) {
-					max = collegeSet[j].gNum;
-					indexOfMax = j;
-				} // if	
-			} // for
+		for(;first2<=last2;++first2,++i)
+			temp[i] = collegeSet[first2];
 			
-			if ( indexOfMax != i )
-				Swap( i, indexOfMax );
-		} // for
-		END = clock();
-		return END - START;
-	} // Ssort()
-	
-	double Bsort () { //氣泡排序 
-		double START, END;
-		START = clock();
-		bool sorted = false;
-		int size = collegeSet.size();
-		for ( int i=0; i<size && !sorted ; i++ ){
-			sorted = true;
-			for(int j=1;j<size-i;j++){
-				if( collegeSet[j].gNum > collegeSet[j-1].gNum ){
-					Swap(j,j-1);
-					sorted = false;
-				}//if
-			}//for
-		}//for
-		
-		END = clock();
-		return END - START;
-	} // Bsort()
-	double Msort () { //合併排序 
-		double START, END;
-		START = clock();
-		
-		
-		
-		
-		
-		
-		
-		END = clock();
-		return END - START;
-	} // Msort()
-	double Qsort () { //快速排序 
-		double START, END;
-		START = clock();
-		
-		END = clock();
-		return END - START;
-	} // Qsort()
-};
-
-
-int main() {
-	int command;
-	List list;
-	string fileNum;
-	bool haveFile;
-	do {
-		cout << endl << "******** Sorting Algorithms *********" ;
-		cout << endl << "* 0. QUIT                           *" ;
-		cout << endl << "* 1. Selection sort vs. Bubble sort *" ;
-		cout << endl << "* 2. Merge sort vs. Quick sort      *" ;
-		cout << endl << "*************************************" ;
-		cout << endl << "Input a command(0, 1, 2): ";
-		cin >> command;
-		if ( command == 0 )
-			break;
-		else if ( command == 1 ) {
-			cout << endl << "Input a file number: ";
-			cin >> fileNum; // 檔案編號 
-		
-			double selectT, bubbleT;
-			list.Load( fileNum );
-			selectT = list.Ssort(); // 選擇排序 
-			list.Write( fileNum, "select" );
-			list.Clear();
-			
-			list.Load( fileNum );
-			bubbleT = list.Bsort(); // 氣泡排序
-			list.Write( fileNum, "bubble" );
-			list.Clear(); 
-			cout << endl << "Select sort time : " << selectT << " ms." ;
-			cout << endl << "Bubble sort time : " << bubbleT << " ms." ;
-		} // else if 
-		else if ( command == 2 ) {
-			double mergeT, quickT;
-			list.Load( fileNum );
-			quickT = list.Qsort();
-			list.Write( fileNum, "MY_select Quick" );
-			list.Print();
-			list.Clear();
-//			cout << endl << "Merge sort time : " << mergeT << " ms." ;
-//			cout << endl << "QUick sort time : " << quickT << " ms." ;
-			
-		} // else if 
-		
-	} while( command != 0 );
-}  // main()
+		for(i=first;i<=last;++i)
+			collegeSet[i] = temp[i];
+	}// merge
