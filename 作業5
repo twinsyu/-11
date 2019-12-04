@@ -142,52 +142,28 @@ public:
 	} // Bsort()
 	
 	void Merge( int first, int mid, int last ) {
-		cout << first << "  " << mid << " " << last;
 		vector<Data> tempVec;
 		int first1 = first, last1 = mid;
 		int first2 = mid + 1, last2 = last;
 		while ( ( first1 <= last1 ) && ( first2 <= last2 ) ) {
-			Data temp;
 			if ( collegeSet[first1].gNum >= collegeSet[first2].gNum ) {
-				cout << endl << collegeSet[first1].gNum << ">=" << collegeSet[first2].gNum; 
-				temp = collegeSet[first1];
+				tempVec.push_back( collegeSet[first1] );
 				first1++;
 			} // if
 			else {
-				cout << endl << collegeSet[first1].gNum << "<" << collegeSet[first2].gNum; 
-				temp = collegeSet[first2];
+				tempVec.push_back( collegeSet[first2] );
 				first2 ++;
 			} // else 
-			
-			tempVec.push_back( temp );
-		} // for
+		} // while
 		
-		cout << "          first1:  " << first1 << " first2: " << first2<<endl;	
-		while (first1 <= last1) {
-			Data temp;
-			temp= collegeSet[first1];
-			tempVec.push_back(temp);
-			first1++;
-		} // for
-		while ( first2 <= last2 ) {
-			Data temp;
-			temp = collegeSet[first2];
-			tempVec.push_back(temp);
-			first2++;
-		} // for
+		for ( ; first1 <= last1; first1++ ) 
+			tempVec.push_back(collegeSet[first1]);
+		for ( ; first2 <= last2; first2++ )
+			tempVec.push_back( collegeSet[first2] );
 		
-		int index = first;
-		int i = 0;
-		while ( index <= last ) {
-			collegeSet[index].totalData = tempVec[i].totalData ;
-			index++;
-			i++;
-		} // for
-		
-		for( i = first; i <= last; ++i )
-			cout << endl << collegeSet[i].totalData ;
+		for ( int index = first, i = 0; index <= last; i++, index++ )
+			collegeSet[index] = tempVec[i] ;
 		tempVec.clear();
-		cout << endl;
 	} // merge()
 	
 	double Msort ( int first, int last ) { //合併排序 
@@ -195,9 +171,9 @@ public:
 		START = clock();
 		if ( first < last ) {
 			int mid = ( first + last ) / 2;
-			Msort( first, mid );
-			Msort( mid + 1, last );
-			Merge( first, mid, last );
+			Msort( first, mid ); // 前半部分 分組 
+			Msort( mid + 1, last ); // 後半部分 分組 
+			Merge( first, mid, last ); // 排序 
 		} // if
 
 		END = clock();
@@ -283,9 +259,9 @@ int main() {
 			if ( list.Load( fileNum ) ) { // 如果有檔案 
 				quickT = list.Qsort( 0, list.GetSize()-1 ); // 快速排序 
 				list.Write( fileNum, "MY_quick" );	// 輸出快速排序檔案 
-				list.Clear(); // 清空vector 
+				list.Clear(); // 清空 vector 
 			
-				list.Load( fileNum );//重新讀檔 
+				list.Load( fileNum ); //重新讀檔 
 				mergeT = list.Msort( 0, list.GetSize()-1 ); // 合併排序 
 				list.Write( fileNum, "My_merge" ); // 輸出合併排序檔案 
 				list.Clear(); // 清空 vector 
