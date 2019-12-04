@@ -4,7 +4,6 @@
 # include<cstring>
 # include<stdlib.h>
 # include<new>
-# include<iomanip>
 # include<time.h>
 # include<fstream>
 # include<vector> 
@@ -71,9 +70,8 @@ public:
 		ofstream outfile( newFile.c_str() );
 		
 		int size = collegeSet.size();
-		for ( int i = 0; i < size; i++ ) {
+		for ( int i = 0; i < size; i++ )
 			outfile << collegeSet[i].totalData << endl;
-		} // for
 	} // Write()
 	
 	void Clear() {
@@ -103,6 +101,50 @@ public:
 	} // Print() 
 //*/	
 
+
+	double Ssort() { //選擇排序 
+		double START, END;
+		START = clock();
+		int size = collegeSet.size();
+		int max = -1; // 最大數的 
+		int indexOfMax;
+		
+		for ( int i = 0; i < size - 1; i++ ) {
+			int max = -1; // 最大數
+			for ( int j = i; j < size; j++ ) {
+				if ( collegeSet[j].gNum > max ) {
+					max = collegeSet[j].gNum;
+					indexOfMax = j;
+				} // if	
+			} // for
+			
+			if ( indexOfMax != i )
+				Swap( i, indexOfMax );
+		} // for
+		END = clock();
+		return END - START;
+	} // Ssort()
+	
+	double Bsort () { //氣泡排序 
+		double START, END;
+		START = clock();
+		bool sorted = false;
+		int size = collegeSet.size();
+		for ( int i=0; i<size && !sorted ; i++ ){
+			sorted = true;
+			for(int j=1;j<size-i;j++){
+				if( collegeSet[j].gNum > collegeSet[j-1].gNum ){
+					Swap(j,j-1);
+					sorted = false;
+				}//if
+			}//for
+		}//for
+		
+		END = clock();
+		return END - START;
+	} // Bsort()
+	
+	
 	void Merge( int first, int mid, int last ) {
 		cout << first << "  " << mid << " " << last;
 		vector<Data> tempVec;
@@ -151,48 +193,7 @@ public:
 		tempVec.clear();
 		cout << endl;
 	} // merge()
-
-	double Ssort() { //選擇排序 
-		double START, END;
-		START = clock();
-		int size = collegeSet.size();
-		int max = -1; // 最大數的 
-		int indexOfMax;
-		
-		for ( int i = 0; i < size - 1; i++ ) {
-			int max = -1; // 最大數
-			for ( int j = i; j < size; j++ ) {
-				if ( collegeSet[j].gNum > max ) {
-					max = collegeSet[j].gNum;
-					indexOfMax = j;
-				} // if	
-			} // for
-			
-			if ( indexOfMax != i )
-				Swap( i, indexOfMax );
-		} // for
-		END = clock();
-		return END - START;
-	} // Ssort()
 	
-	double Bsort () { //氣泡排序 
-		double START, END;
-		START = clock();
-		bool sorted = false;
-		int size = collegeSet.size();
-		for ( int i=0; i<size && !sorted ; i++ ){
-			sorted = true;
-			for(int j=1;j<size-i;j++){
-				if( collegeSet[j].gNum > collegeSet[j-1].gNum ){
-					Swap(j,j-1);
-					sorted = false;
-				}//if
-			}//for
-		}//for
-		
-		END = clock();
-		return END - START;
-	} // Bsort()
 	double Msort ( int first, int last ) { //合併排序 
 		double START, END;
 		START = clock();
@@ -208,51 +209,42 @@ public:
 	} // Msort()
 	
 
- void Partition (vector<Data> & collegeSet,int first, int last) { //敹恍?摨?
- // double START, END;
- // START = clock();
-  
-  first = 0;
-  last = collegeSet.size();
-  int p = 0;
-  
-  int lastS1 = first ;
-  int firstUn = first + 1 ;
-  while( firstUn <= last ){
-   if( collegeSet[firstUn].gNum > collegeSet[p].gNum ) {
-    //lastS1++;
-    Swap( lastS1,firstUn );
-    lastS1++;
-   }// if
-   else {
-    firstUn++;
-    //Swap( first ,lastS1 );
-    //p = lastS1 ; 
-   } // else
-   firstUn++; 
-  } // while
-
-  //END = clock();
-  //return END - START;
- } //Partition()\
+ void Partition ( int first, int last, int & p ) {
+	int lastS1 = first;
+	int firstUn = first + 1 ;
+	p = first;
+	while ( firstUn <= last ) {
+		if( collegeSet[firstUn].gNum > collegeSet[p].gNum ) {
+    		lastS1++;
+    		Swap( lastS1, firstUn );
+		} // if
+		else 
+    		firstUn++;  
+    
+		firstUn++; 
+	} // while
+	
+	Swap( first ,lastS1 );
+	p = lastS1 ; 
+ } // Partition()
  
- double Qsort( int first, int last ) {
- 	double	START, END;
- 	START = clock();
-  int pivotIndex;
-  if(first<last) {
-   Partition(collegeSet,first,last);
-   Qsort(first,pivotIndex-1);
-   Qsort(pivotIndex+1,last);
-  }//if
-  END = clock();
-  return END - START;
-  
- }//Qsort
+	double Qsort( int first, int last ) {
+		double	START, END;
+		START = clock();
+		int pivotIndex;
+		if ( first < last ) {
+			Partition( first, last, pivotIndex );
+			Qsort( first, pivotIndex - 1 );
+			Qsort( pivotIndex + 1, last );
+		} // if
+	
+		END = clock();
+		return END - START;
+	} // Qsort()
 	
 	int GetSize() {
 		return collegeSet.size();
-	} 
+	} // GetSize()
 };
 
 
