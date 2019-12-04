@@ -144,7 +144,6 @@ public:
 		return END - START;
 	} // Bsort()
 	
-	
 	void Merge( int first, int mid, int last ) {
 		cout << first << "  " << mid << " " << last;
 		vector<Data> tempVec;
@@ -218,8 +217,6 @@ public:
     		lastS1++;
     		Swap( lastS1, firstUn );
 		} // if
-		else 
-    		firstUn++;  
     
 		firstUn++; 
 	} // while
@@ -284,15 +281,16 @@ int main() {
 			cout << endl << "Input a file number: ";
 			cin >> fileNum; // 檔案編號 
 			double mergeT, quickT;
+			
 			list.Load( fileNum );
 			quickT = list.Qsort( 0, list.GetSize()-1 );
 			list.Write( fileNum, "MY_quick" );
 			list.Clear();
 			
-			list.Load( fileNum );
-			mergeT = list.Msort( 0, list.GetSize()-1 );
-			list.Write( fileNum, "My_merge" );
-			list.Clear();
+		//	list.Load( fileNum );
+		//	mergeT = list.Msort( 0, list.GetSize()-1 );
+		//	list.Write( fileNum, "My_merge" );
+		//	list.Clear();
 			cout << endl << "Merge sort time : " << mergeT << " ms." ;
 			cout << endl << "QUick sort time : " << quickT << " ms." ;
 			
