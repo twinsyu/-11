@@ -27,7 +27,7 @@ public:
 		infile = fopen( filename.c_str(), "r" );
 		
 		if ( infile == NULL )  // 無檔案 
-			cout << endl << filename << " does not exist!" << endl;
+			cout << endl << filename << " does not exist!" << endl ;
 		else { // 有檔案
 //			collegeSet.clear(); // 清空vector 
 			char temp[40];
@@ -50,9 +50,8 @@ public:
 					else if ( i != 14 ) // 除了一行中最後一項數據
 						tempD.totalData = tempD.totalData + '\t';
 					
-					if ( i == 10 ) { // 上學年度畢業生數 
+					if ( i == 10 )  // 上學年度畢業生數 
 						tempD.gNum = atoi( temp );
-					} // if
 				} // for
 				
 				collegeSet.push_back( tempD );
@@ -100,8 +99,6 @@ public:
 		} // for
 	} // Print() 
 //*/	
-
-
 	double Ssort() { //選擇排序 
 		double START, END;
 		START = clock();
@@ -207,23 +204,23 @@ public:
 		return END - START;
 	} // Msort()
 	
-
- void Partition ( int first, int last, int & p ) {
-	int lastS1 = first;
-	int firstUn = first + 1 ;
-	p = first;
-	while ( firstUn <= last ) {
-		if( collegeSet[firstUn].gNum > collegeSet[p].gNum ) {
-    		lastS1++;
-    		Swap( lastS1, firstUn );
-		} // if
+	void Partition ( int first, int last, int & p ) {
+		int lastS1 = first; // 比 pivot大的最後一個 index 
+		int firstUn = first + 1 ; // 將要被比較的 index 
+		p = first; // 將 pivotIndex 設為首位數的 index 
+		while ( firstUn <= last ) {
+			if( collegeSet[firstUn].gNum > collegeSet[p].gNum ) { // 若 正在被比較的數 > pivot
+				// 將 < pivot 的首項 與 正在被比較的數 交換 
+    			lastS1++; //   < pivot 的首項
+    			Swap( lastS1, firstUn );  
+			} // if
     
-		firstUn++; 
-	} // while
+			firstUn++; // 換下一個index比較 
+		} // while
 	
-	Swap( first ,lastS1 );
-	p = lastS1 ; 
- } // Partition()
+		Swap( first ,lastS1 ); // 把 pivot 換到正確位置上 
+		p = lastS1 ; // 更正 pivotIndex 
+	} // Partition()
  
 	double Qsort( int first, int last ) {
 		double	START, END;
@@ -265,37 +262,38 @@ int main() {
 			cin >> fileNum; // 檔案編號 
 		
 			double selectT, bubbleT;
-			list.Load( fileNum );
-			selectT = list.Ssort(); // 選擇排序 
-			list.Write( fileNum, "My_select" );
-			list.Clear();
+			if ( list.Load( fileNum ) ) {  // 如果有檔案 
+				selectT = list.Ssort(); // 選擇排序 
+				list.Write( fileNum, "My_select" ); // 輸出選擇排序檔案 
+				list.Clear(); // 清空 vector
 			
-			list.Load( fileNum );
-			bubbleT = list.Bsort(); // 氣泡排序
-			list.Write( fileNum, "My_bubble" );
-			list.Clear(); 
-			cout << endl << "Select sort time : " << selectT << " ms." ;
-			cout << endl << "Bubble sort time : " << bubbleT << " ms." ;
+				list.Load( fileNum ); // 重新讀檔 
+				bubbleT = list.Bsort(); // 氣泡排序
+				list.Write( fileNum, "My_bubble" ); // 輸出氣泡排序檔案  
+				list.Clear(); 
+				cout << endl << "Select sort time : " << selectT << " ms." ; // 印出選擇排序時間 
+				cout << endl << "Bubble sort time : " << bubbleT << " ms." ; // 印出氣泡排序時間 
+			} // if
 		} // else if 
 		else if ( command == 2 ) {
 			cout << endl << "Input a file number: ";
 			cin >> fileNum; // 檔案編號 
 			double mergeT, quickT;
 			
-			list.Load( fileNum );
-			quickT = list.Qsort( 0, list.GetSize()-1 );
-			list.Write( fileNum, "MY_quick" );
-			list.Clear();
+			if ( list.Load( fileNum ) ) { // 如果有檔案 
+				quickT = list.Qsort( 0, list.GetSize()-1 ); // 快速排序 
+				list.Write( fileNum, "MY_quick" );	// 輸出快速排序檔案 
+				list.Clear(); // 清空vector 
 			
-		//	list.Load( fileNum );
-		//	mergeT = list.Msort( 0, list.GetSize()-1 );
-		//	list.Write( fileNum, "My_merge" );
-		//	list.Clear();
-			cout << endl << "Merge sort time : " << mergeT << " ms." ;
-			cout << endl << "QUick sort time : " << quickT << " ms." ;
-			
+				list.Load( fileNum );//重新讀檔 
+				mergeT = list.Msort( 0, list.GetSize()-1 ); // 合併排序 
+				list.Write( fileNum, "My_merge" ); // 輸出合併排序檔案 
+				list.Clear(); // 清空 vector 
+				cout << endl << "Merge sort time : " << mergeT << " ms." ; // 印出合併排序時間 
+				cout << endl << "Quick sort time : " << quickT << " ms." ; // 印出快速排序時間 
+			} // if
 		} // else if 
-		else
+		else // 無此指令 
 			cout << "command does not exist!";
 	} while( command != 0 );
 }  // main()
