@@ -3,7 +3,6 @@
 # include<cstdio>
 # include<cstring>
 # include<stdlib.h>
-# include<new>
 # include<time.h>
 # include<fstream>
 # include<vector> 
@@ -91,14 +90,6 @@ public:
 		collegeSet[b].gNum = tempN;
 	} // Swap
 	 
-///*
-	void Print() {
-		int size = collegeSet.size();
-		for ( int i = 0; i < size; i++ ) {
-			cout << endl << i << ": " << collegeSet[i].gNum;
-		} // for
-	} // Print() 
-//*/	
 	double Ssort() { //選擇排序 
 		double START, END;
 		START = clock();
