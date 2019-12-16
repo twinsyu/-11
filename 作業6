@@ -1,1 +1,301 @@
-#10727140黃于軒 10727154黃于珊
+// 10727140 黃于軒 10727154 黃于珊
+# include<iostream>
+# include<cstring>
+# include<stdlib.h>
+# include<new>
+# include<fstream>
+# include<vector> 
+# include<iomanip>
+# include<new>
+using namespace std;
+
+class List {
+	struct Data {
+		string totalData; // 一行內的所有資訊
+		string schoolName; // 學校名稱 
+		int gNum; // 上學年度畢業學生數
+	};
+	vector<Data> collegeSet;
+	
+public:
+	bool Load( string & fileNum ) { // 讀檔 
+		cout << endl << "Input a file number: ";
+		cin >> fileNum; // 檔案編號 
+	
+		FILE *infile = NULL;
+		string filename = "input" + fileNum + ".txt";
+		infile = fopen( filename.c_str(), "r" );
+		
+		if ( infile == NULL )  // 無檔案 
+			cout << endl << filename << " does not exist!" << endl;
+		else { // 有檔案
+			collegeSet.clear(); // 清空vector 
+			char ch;
+			//讀掉前三行 
+			for ( ch = '\0'; ch != '\n' ; ch = getc(infile) );
+			for ( ch = '\0'; ch != '\n' ; ch = getc(infile) );
+			for ( ch = '\0'; ch != '\n' ; ch = getc(infile) );
+			
+			ch = getc(infile);
+			while ( ch != EOF ) {
+				Data temp;
+				string gNum = "";  
+				int numOfType = 0;
+				while ( ch != '\n' && ch != EOF ) {
+					if ( numOfType != 0 && numOfType != 2 && numOfType != 9 && numOfType != 10 )
+						temp.totalData = temp.totalData + ch;
+					
+					if ( numOfType == 1 && ch != '\t' ) // 學校名稱 
+						temp.schoolName = temp.schoolName + ch;
+					else if ( numOfType == 8 ) // 上學年度畢業生數 
+						gNum = gNum + ch;
+					
+					if ( ch == '\t' )
+						numOfType++;
+					ch = getc(infile);
+				} // while
+				
+				temp.gNum = atoi( gNum.c_str() ) ;
+				collegeSet.push_back( temp );
+				if ( ch == '\n' )
+					ch = getc(infile);
+			} // while
+		
+			fclose( infile );
+			return true;
+		} // else 有檔案 
+		
+		fileNum = "";
+		return false;
+	} // Load()
+	
+	void Clear() {
+		collegeSet.clear();
+	} // Clear()
+	int GetSize() {
+		return collegeSet.size();
+	} // GetSize()
+	int Get_gNum( int i ) {
+		return collegeSet[i].gNum;
+	} // Get_gNum()
+	string Get_schoolName( int i ) {
+		return collegeSet[i].schoolName;
+	} // schoolName() 
+	string GetTotalData( int i ) {
+		return collegeSet[i].totalData;
+	} // GetTotalData()
+	
+	void Print() {
+		int size = collegeSet.size();
+		for ( int i = 0; i < size; i++ ) {
+			cout << endl << "["<< setw(2) << i + 1 <<"]" << setw(4) << "" << collegeSet[i].totalData;
+		} // for
+	} // Print() 
+} ; 
+
+class NumTree {
+	struct NumNode {
+		int gNum;
+		int index;
+		NumNode* left;
+		NumNode* right;
+	};
+	NumNode* root; 
+	typedef NumNode* NumPtr;
+public:
+	NumTree() {
+		root = NULL;
+	} // NumTree()
+	
+	void NewNode( NumPtr & walk,int temp, int index ) {
+		walk = new NumNode();
+		walk->right = NULL;
+		walk->left = NULL;
+		walk->gNum = temp;
+		walk->index = index;
+	} // SetRoot()
+	
+	void Attach( NumPtr & walk, int temp, int index ) {
+		if ( walk == NULL )
+			NewNode( walk,temp, index );
+		else if ( temp < walk->gNum )
+			Attach( walk->left, temp, index );
+		else
+			Attach( walk->right, temp, index );
+	} // Attach()
+	
+	int CreateBinaryTree( List list ) {
+		ClearUp(); // 清空 
+		for ( int i = 0; i < list.GetSize(); i++ )
+			Attach( root, list.Get_gNum( i ), i );
+		
+		return GetHeight( root );
+	} // CreateBinaryTree()
+	
+	int GetHeight( NumPtr walk ) {
+		if ( walk == NULL )
+			return 0;
+		int left =  GetHeight( walk->left ) + 1;
+		int right = GetHeight( walk->right ) + 1;
+		
+		if ( left > right )
+			return left;
+		else
+			return right;
+	} // GetHeight()
+	
+	void ClearUp() {
+		root = NULL;
+	} // ClearUp() 
+	
+	bool Walk( NumPtr walk, int gNum, List list, int & num ) {
+		bool in = false;
+		if ( walk == NULL );
+		else {
+			if ( walk->gNum >= gNum ) {
+				Walk( walk->left, gNum, list, num );
+				cout << endl << "[" << setw(2) << num << "]\t" << list.GetTotalData( walk->index );
+				num++;
+				in = true;
+			} // if
+			
+			Walk( walk->right, gNum, list, num );
+		} // if
+		
+		return in;
+	} // Walk()
+	
+	void Find( int gNum, List list ) {
+		int num = 1;
+		if ( gNum < 0 )
+			cout << endl << "### the input string " << gNum << " is not a decimal number! ###\n" << "There is no match!\n";
+		else if ( ! Walk( root, gNum, list, num ) )
+			cout << endl << "There is no match!\n";
+	} // Find()
+}; 
+
+class NameTree {
+	struct NameNode {
+		string schoolName;
+		int index;
+		NameNode* left;
+		NameNode* right;
+	};
+	NameNode* root; 
+	typedef NameNode* NamePtr;
+public:
+	NameTree() {
+		root = NULL;
+	} // NumTree()
+	
+	void NewNode( NamePtr & walk, string temp, int index ) {
+		walk = new NameNode();
+		walk->right = NULL;
+		walk->left = NULL;
+		walk->schoolName = temp;
+		walk->index = index;
+	} // SetRoot()
+	
+	void Attach( NamePtr & walk, string temp, int index ) {
+		if ( walk == NULL )
+			NewNode( walk,temp, index );
+		else if ( temp.compare( walk->schoolName ) < 0 )
+			Attach( walk->left, temp, index );
+		else
+			Attach( walk->right, temp, index );
+	} // Attach()
+	
+	int CreateBinaryTree( List list ) {
+		ClearUp();
+		for ( int i = 0;i < list.GetSize(); i++ )
+			Attach( root, list.Get_schoolName( i ), i );
+		
+		return GetHeight( root );
+	} // CreateBinaryTree()
+	
+	int GetHeight( NamePtr walk ) {
+		if ( walk == NULL )
+			return 0;
+		int left =  GetHeight( walk->left );
+		int right = GetHeight( walk->right );
+		
+		if ( left > right )
+			return left + 1;
+		else
+			return right + 1;
+	} // GetHeight()
+		
+	void ClearUp() {
+		root = NULL;
+	} // ClearUp() 
+		
+	bool Walk( NamePtr walk, string schoolName, List list, int & num ) {
+		if ( walk == NULL );
+		else if ( walk->schoolName.compare(schoolName) == 0 ) {
+			cout << endl << "[" << setw(2) << num << "]\t"  << list.GetTotalData( walk->index );
+			num++;
+			Walk( walk->right, schoolName, list, num );
+			return true;
+		} // else if
+		else if ( schoolName.compare(walk->schoolName) < 0 ) 
+			return Walk( walk->left, schoolName, list, num );
+		else if ( schoolName.compare( walk->schoolName ) > 0 )
+			return Walk( walk->right, schoolName, list, num );
+	} // Walk()
+
+	void Find( string schoolName, List list ) {
+		int num = 1;
+		if ( ! Walk( root, schoolName, list, num ) )
+			cout << endl << "There is no match!\n";
+		else cout << endl;
+	} // Find()
+};
+
+
+int main() {
+	int command;
+	List list;
+	bool haveFile;
+	string fileNum = "";
+	NumTree numTree;
+	NameTree nameTree;
+	do {
+		cout << endl << "*** University Graduate Information System ***" ;
+		cout << endl << "* 0. QUIT                                    *" ;
+		cout << endl << "* 1. Create Two Binary Search Trees          *" ;
+		cout << endl << "* 2. Search by Number of Graduates           *" ;
+		cout << endl << "* 3. Search by School Name                   *" ;
+		cout << endl << "**********************************************" ;
+		cout << endl << "Input a command(0, 1, 2, 3): ";
+		cin >> command;
+		if ( command == 0 )
+			break;
+		else if ( command == 1 ) {
+			if ( list.Load(fileNum) ) {
+				list.Print();  
+				int heightOfNumTree, heightOfNameTree; 
+				heightOfNumTree = numTree.CreateBinaryTree( list ); // 建立 上學年度畢業生 Binary Tree 
+				heightOfNameTree = nameTree.CreateBinaryTree( list ); // 建立 學校名稱  Binary Tree 
+				cout << endl << "\nTree heights:";
+				cout << endl << "{Number of graduates} =" << heightOfNumTree;
+				cout << endl << "{School name} =" << heightOfNameTree << endl;
+			} // if
+		} // else if
+		else if ( ( command == 2 || command == 3 ) && fileNum == "" )
+			cout << endl << "Please choose command 1 first!\n";
+		else if ( command == 2 ) {
+			int numOfGraduate;
+			cout << endl << "Input the number of graduates:"; 
+			cin >> numOfGraduate;
+			numTree.Find( numOfGraduate, list );
+		} // else if
+		else if ( command == 3 ) {
+			string schoolName; 
+			cout << endl << "Input a school name:";
+			cin >> schoolName;
+			nameTree.Find( schoolName, list );
+		} // else if
+		else
+			cout << endl << "command does not exist!\n";
+	} while( command != 0 );
+}  // main()
