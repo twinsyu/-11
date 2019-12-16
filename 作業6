@@ -1,5 +1,6 @@
 // 10727140 黃于軒 10727154 黃于珊
 # include<iostream>
+# include<sstream>
 # include<cstring>
 # include<stdlib.h>
 # include<new>
@@ -8,6 +9,20 @@
 # include<iomanip>
 # include<new>
 using namespace std;
+
+bool isNum ( string input ) {
+	stringstream sin(input);
+	double d;
+	char c;
+	if ( ! ( sin >> d ) )
+		return false;
+	if ( sin >> c )
+		return false;
+	
+	return true;
+	
+} // isNum()
+
 
 class List {
 	struct Data {
@@ -159,7 +174,8 @@ public:
 				in = true;
 			} // if
 			
-			Walk( walk->right, gNum, list, num );
+			if ( Walk( walk->right, gNum, list, num ) )
+				in =  true;
 		} // if
 		
 		return in;
@@ -171,6 +187,8 @@ public:
 			cout << endl << "### the input string " << gNum << " is not a decimal number! ###\n" << "There is no match!\n";
 		else if ( ! Walk( root, gNum, list, num ) )
 			cout << endl << "There is no match!\n";
+		else 
+			cout << endl;
 	} // Find()
 }; 
 
@@ -284,10 +302,13 @@ int main() {
 		else if ( ( command == 2 || command == 3 ) && fileNum == "" )
 			cout << endl << "Please choose command 1 first!\n";
 		else if ( command == 2 ) {
-			int numOfGraduate;
+			string numOfGraduate;
 			cout << endl << "Input the number of graduates:"; 
 			cin >> numOfGraduate;
-			numTree.Find( numOfGraduate, list );
+			if ( isNum( numOfGraduate ) )	
+				numTree.Find( atoi(numOfGraduate.c_str()), list );
+			else
+				cout << endl << "Please input number! \n";
 		} // else if
 		else if ( command == 3 ) {
 			string schoolName; 
