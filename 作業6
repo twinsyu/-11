@@ -176,7 +176,7 @@ public:
 			
 			if ( Walk( walk->right, gNum, list, num ) )
 				in =  true;
-		} // if
+		} // else
 		
 		return in;
 	} // Walk()
